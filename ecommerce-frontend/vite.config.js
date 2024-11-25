@@ -3,16 +3,13 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   plugins: [react()],
-  esbuild: {
-    loader: {
-      '.js': 'jsx', // Ensure esbuild handles .js files as JSX
-    },
+  resolve: {
+    extensions: ['.js', '.jsx'], // Ensure Vite recognizes these extensions
   },
   server: {
-    port: 3000,  // Vite dev server port
+    port: 3000, // Specify the development server port
     proxy: {
-      '/api': 'http://localhost:5000',  // Proxy backend API requests to your backend
+      '/api': 'http://localhost:5000', // Proxy backend requests
     },
-    historyApiFallback: true,  // Allow browser routing (Handle 404s in the frontend)
   },
 });
