@@ -1,34 +1,27 @@
-import React, { useState, useEffect } from "react";
-import axios from "../utils/api"; // Import the Axios instance
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchOrderHistory } from '../redux/actions/orderActions';
 
-const OrderHistory = () => {
-  const [orders, setOrders] = useState([]);
+function OrderHistory({ userId }) {
+    const dispatch = useDispatch();
+    const { orders, error } = useSelector((state) => state.orderReducer);
 
-  // Fetch order history when the component mounts
-  useEffect(() => {
-    const fetchOrders = async () => {
-      try {
-        const response = await axios.get("/orders");
-        setOrders(response.data); // Assuming response contains orders
-      } catch (error) {
-        console.error("Error fetching orders:", error.message);
-      }
-    };
-    fetchOrders();
-  }, []);
+    useEffect(() => {
+        dispatch(fetchOrderHistory(userId));
+    }, [dispatch, userId]);
 
-  return (
-    <div>
-      <h2>Your Order History</h2>
-      <ul>
-        {orders.map((order) => (
-          <li key={order._id}>
-            Order #{order._id} - Status: {order.status}
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-};
+    return (
+        <div>
+            <h3>Order History</h3>
+            {error ? <p>{error}</p> : orders.map((order) => (
+                <div key={order._id}>
+                    <h4>Order {order._id}</h4>
+                    <p>Status: {order.status}</p>
+                    <p>Total: ${order.totalAmount}</p>
+                </div>
+            ))}
+        </div>
+    );
+}
 
 export default OrderHistory;

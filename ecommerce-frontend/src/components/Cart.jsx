@@ -1,46 +1,43 @@
-import React, { useState, useEffect } from "react";
-import axios from "../utils/api"; // Import the Axios instance
+import React from 'react'; // Keep only React import
+import { useDispatch, useSelector } from 'react-redux';
+import { removeFromCart } from '../redux/actions/cartActions'; // Cart action to remove items
+import { Link } from 'react-router-dom'; // To navigate to checkout
 
-const Cart = () => {
-  const [cartItems, setCartItems] = useState([]);
+function Cart() {
+    const dispatch = useDispatch();
+    const cartItems = useSelector((state) => state.cart.cart); // Get cart items from Redux store
 
-  // Fetch cart items when the component mounts
-  useEffect(() => {
-    const fetchCartItems = async () => {
-      try {
-        const response = await axios.get("/cart");
-        setCartItems(response.data); // Assuming the response contains cart items
-      } catch (error) {
-        console.error("Error fetching cart:", error.message);
-      }
+    const handleRemoveItem = (id) => {
+        dispatch(removeFromCart(id)); // Dispatch action to remove item
     };
-    fetchCartItems();
-  }, []);
 
-  const handleRemoveItem = async (productId) => {
-    try {
-      await axios.delete(`/cart/${productId}`);
-      // Re-fetch the cart items after deletion
-      const response = await axios.get("/cart");
-      setCartItems(response.data);
-    } catch (error) {
-      console.error("Error removing item from cart:", error.message);
-    }
-  };
+    const getTotalAmount = () => {
+        return cartItems.reduce((total, item) => total + item.price * item.quantity, 0); // Calculate total
+    };
 
-  return (
-    <div>
-      <h2>Your Cart</h2>
-      <ul>
-        {cartItems.map((item) => (
-          <li key={item.productId}>
-            {item.name} - {item.quantity}
-            <button onClick={() => handleRemoveItem(item.productId)}>Remove</button>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-};
+    return (
+        <div>
+            <h3>Shopping Cart</h3>
+            {cartItems.length === 0 ? (
+                <p>Your cart is empty.</p>
+            ) : (
+                <div>
+                    <ul>
+                        {cartItems.map((item) => (
+                            <li key={item._id}>
+                                <h4>{item.name}</h4>
+                                <p>Price: ${item.price}</p>
+                                <p>Quantity: {item.quantity}</p>
+                                <button onClick={() => handleRemoveItem(item._id)}>Remove</button>
+                            </li>
+                        ))}
+                    </ul>
+                    <h4>Total: ${getTotalAmount()}</h4>
+                    <Link to="/checkout">Proceed to Checkout</Link>
+                </div>
+            )}
+        </div>
+    );
+}
 
 export default Cart;

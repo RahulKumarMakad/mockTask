@@ -1,22 +1,16 @@
-import { LOGIN_SUCCESS, REGISTER_SUCCESS } from "../actions/authActions";
-
-const initialState = {
-  token: localStorage.getItem("token"),
-  user: null,
-};
+const initialState = { token: localStorage.getItem('authToken'), error: null };
 
 const authReducer = (state = initialState, action) => {
-  switch (action.type) {
-    case LOGIN_SUCCESS:
-    case REGISTER_SUCCESS:
-      return {
-        ...state,
-        token: action.payload.token,
-        user: action.payload.user,
-      };
-    default:
-      return state;
-  }
+    switch (action.type) {
+        case 'REGISTER_SUCCESS':
+        case 'LOGIN_SUCCESS':
+            return { ...state, token: action.payload };
+        case 'REGISTER_FAIL':
+        case 'LOGIN_FAIL':
+            return { ...state, error: action.payload };
+        default:
+            return state;
+    }
 };
 
 export default authReducer;

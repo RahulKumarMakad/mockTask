@@ -1,36 +1,25 @@
-import React, { useState } from "react";
-import axios from "../utils/api"; // Import the Axios instance
+import React, { useState } from 'react';
 
-const Register = () => {
-  const [userDetails, setUserDetails] = useState({ name: "", email: "", password: "" });
+function Register() {
+    const [formData, setFormData] = useState({ name: '', email: '', password: '' });
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setUserDetails({ ...userDetails, [name]: value });
-  };
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await axios.post("/auth/register", userDetails);
-      console.log("Registration successful:", response.data);
-      // Redirect to login or dashboard
-    } catch (error) {
-      console.error("Registration failed:", error.message);
-    }
-  };
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        console.log(formData);
+    };
 
-  return (
-    <form onSubmit={handleSubmit}>
-      <label>Name:</label>
-      <input type="text" name="name" value={userDetails.name} onChange={handleChange} required />
-      <label>Email:</label>
-      <input type="email" name="email" value={userDetails.email} onChange={handleChange} required />
-      <label>Password:</label>
-      <input type="password" name="password" value={userDetails.password} onChange={handleChange} required />
-      <button type="submit">Register</button>
-    </form>
-  );
-};
+    return (
+        <form onSubmit={handleSubmit}>
+            <input name="name" onChange={handleChange} placeholder="Name" />
+            <input name="email" onChange={handleChange} placeholder="Email" />
+            <input name="password" type="password" onChange={handleChange} placeholder="Password" />
+            <button type="submit">Register</button>
+        </form>
+    );
+}
 
 export default Register;

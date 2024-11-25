@@ -1,27 +1,32 @@
 import React from "react";
-import { Routes, Route } from "react-router-dom";
-import Navbar from "./components/Navbar.jsx";
-import ProductList from "./components/ProductList.jsx";
-import ProductDetails from "./components/ProductDetails.jsx";
-import Cart from "./components/Cart.jsx";
-import OrderHistory from "./components/OrderHistory.jsx";
-import Login from "./components/Login.jsx";
-import Register from "./components/Register.jsx";
-import "./App.css";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Navbar from "./components/Navbar";
+import ProductList from "./components/ProductList";
+import ProductDetails from "./components/ProductDetails";
+import Cart from "./components/Cart";
+import Login from "./components/Login";
+import Register from "./components/Register";
+import OrderSummary from "./components/OrderSummary";  // Import OrderSummary component
+import "./App.css"; // Import global CSS
 
 function App() {
   return (
-    <div>
-      <Navbar />
-      <Routes>
-        <Route path="/" element={<ProductList />} />
-        <Route path="/product/:id" element={<ProductDetails />} />
-        <Route path="/cart" element={<Cart />} />
-        <Route path="/order-history" element={<OrderHistory />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-      </Routes>
-    </div>
+    <Router>
+      <div className="App">
+        <Navbar />
+        <div className="container">
+          <Routes>
+            {/* Routes for the e-commerce app */}
+            <Route path="/" element={<ProductList />} />
+            <Route path="/product/:id" element={<ProductDetails />} />
+            <Route path="/cart" element={<Cart />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/order-summary" element={<OrderSummary />} />  {/* Add OrderSummary route */}
+          </Routes>
+        </div>
+      </div>
+    </Router>
   );
 }
 

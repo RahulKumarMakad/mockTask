@@ -1,10 +1,11 @@
-import { configureStore } from "@reduxjs/toolkit";
-import rootReducer from "./reducers/rootReducer"; // Assuming you are using a combined root reducer
+import { createStore, applyMiddleware } from 'redux';
+import thunk from 'redux-thunk';  // Redux Thunk for asynchronous actions
+import rootReducer from './reducers/rootReducer';  // Import your combined reducers
 
-// Configure the store using Redux Toolkit's configureStore
-const store = configureStore({
-  reducer: rootReducer, // your combined reducers
-  // Optionally, add middleware if needed. By default, configureStore adds `redux-thunk`
-});
+// Create the Redux store with rootReducer and applyMiddleware (for async actions)
+const store = createStore(
+    rootReducer,  // Combine all reducers here
+    applyMiddleware(thunk)  // Apply Redux Thunk for handling async actions like API calls
+);
 
 export default store;

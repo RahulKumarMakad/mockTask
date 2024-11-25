@@ -1,39 +1,28 @@
-import React, { useState, useEffect } from "react";
-import axios from "../utils/api"; // Import the Axios instance
-import { Link } from "react-router-dom";
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchProducts } from '../redux/actions/productActions';
 
-const ProductList = () => {
-  const [products, setProducts] = useState([]);
+function ProductList() {
+    const dispatch = useDispatch();
+    const { products, error } = useSelector((state) => state.productReducer);
 
-  // Fetch products when the component mounts
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await axios.get("/products");
-        setProducts(response.data); // Assuming the response contains product data
-      } catch (error) {
-        console.error("Error fetching products:", error.message);
-      }
-    };
-    fetchProducts();
-  }, []);
+    useEffect(() => {
+        dispatch(fetchProducts());
+    }, [dispatch]);
 
-  return (
-    <div>
-      <h2>Product List</h2>
-      <div>
-        {products.map((product) => (
-          <div key={product._id}>
-            <Link to={`/product/${product._id}`}>
-              <h3>{product.name}</h3>
-              <img src={product.image} alt={product.name} />
-              <p>${product.salePrice}</p>
-            </Link>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-};
+    return (
+        <div>
+            {error ? <p>{error}</p> : products.map((product) => (
+                <div key={product._id}>
+                    <h3>{product.name}</h3>
+                    <p>{product.description}</p>
+                    <p>${product.price}</p>
+                </div>
+            ))}
+        </div>
+    );
+}
 
 export default ProductList;
+// After successful login
+localStorage.setItem('token', 'your-jwt-token-here');

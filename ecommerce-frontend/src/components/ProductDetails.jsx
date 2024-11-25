@@ -1,33 +1,43 @@
-import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import axios from "../utils/api"; // Import the Axios instance
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";  // Get product ID from URL
+import { fetchProductById } from "../redux/actions/productActions";  // Action to fetch product details
 
-const ProductDetails = () => {
-  const { id } = useParams(); // Get the product ID from the URL
-  const [product, setProduct] = useState(null);
+function ProductDetails() {
+  const { id } = useParams();  // Get product ID from the URL
+  const dispatch = useDispatch();
+  const product = useSelector((state) => state.products.product);  // Access product from Redux store
+  const [quantity, setQuantity] = useState(1);
 
-  // Fetch product details when the component mounts
   useEffect(() => {
-    const fetchProductDetails = async () => {
-      try {
-        const response = await axios.get(`/products/${id}`);
-        setProduct(response.data);
-      } catch (error) {
-        console.error("Error fetching product details:", error.message);
-      }
-    };
-    fetchProductDetails();
-  }, [id]);
+    dispatch(fetchProductById(id));  // Fetch product details by ID
+  }, [dispatch, id]);
 
-  if (!product) return <p>Loading...</p>;
+  const handleAddToCart = () => {
+    // Add product to cart (dispatch the addToCart action)
+  };
 
   return (
     <div>
-      <h2>{product.name}</h2>
-      <p>{product.description}</p>
-      <p>${product.price}</p>
+      {product ? (
+        <div>
+          <h3>{product.name}</h3>
+          <img src={product.image} alt={product.name} />
+          <p>{product.description}</p>
+          <p>Price: ${product.price}</p>
+          <input
+            type="number"
+            value={quantity}
+            onChange={(e) => setQuantity(e.target.value)}
+            min="1"
+          />
+          <button onClick={handleAddToCart}>Add to Cart</button>
+        </div>
+      ) : (
+        <p>Loading...</p>
+      )}
     </div>
   );
-};
+}
 
 export default ProductDetails;
