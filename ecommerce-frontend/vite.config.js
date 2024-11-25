@@ -5,7 +5,7 @@ export default defineConfig({
   plugins: [react()],
   esbuild: {
     loader: {
-      '.js': 'jsx', // Ensure esbuild handles `.js` files as JSX
+      '.js': 'jsx', // Ensure esbuild handles .js files as JSX
     },
   },
   server: {

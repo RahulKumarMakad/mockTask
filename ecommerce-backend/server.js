@@ -30,6 +30,11 @@ const connectDB = async () => {
 // Connect to MongoDB
 connectDB();
 
+// Root route for testing
+app.get("/", (req, res) => {
+  res.send("Welcome to the backend API!");  // Welcome message for root URL
+});
+
 // API Routes
 app.use("/api/auth", authRoutes);  // Authentication routes
 app.use("/api/products", productRoutes);  // Product routes

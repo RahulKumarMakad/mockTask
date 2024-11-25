@@ -2,10 +2,7 @@ import axios from "axios";
 
 // Create an Axios instance with the base URL of your backend API
 const instance = axios.create({
-  baseURL: "http://localhost:5000/api", // Ensure this points to your backend API
-  headers: {
-    "Content-Type": "application/json",  // Ensure proper content type for API requests
-  },
+  baseURL: "http://localhost:5000/api", // Your backend API
 });
 
 // Function to set or remove the Authorization token
@@ -26,25 +23,12 @@ instance.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("token"); // Retrieve token from localStorage
     if (token) {
-      config.headers["Authorization"] = `Bearer ${token}`;  // Set token for outgoing requests
+      config.headers["Authorization"] = `Bearer ${token}`;  // Add token to request headers
     }
     return config;
   },
   (error) => {
     return Promise.reject(error); // Reject the request in case of an error
-  }
-);
-
-// Handle responses globally (for centralized error handling, e.g., token expiry)
-instance.interceptors.response.use(
-  (response) => response,  // If successful response, just pass it along
-  (error) => {
-    if (error.response && error.response.status === 401) {
-      // Unauthorized error handling, e.g., JWT expired
-      setAuthToken(null);  // Clear the token if it's expired or invalid
-      window.location.href = "/login";  // Redirect user to login page
-    }
-    return Promise.reject(error); // Reject the error so it can be caught in the component
   }
 );
 
