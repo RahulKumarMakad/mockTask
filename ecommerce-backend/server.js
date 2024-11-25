@@ -1,32 +1,43 @@
 const express = require("express");
+const dotenv = require("dotenv");
 const mongoose = require("mongoose");
-const cors = require("cors");
-require("dotenv").config();
-
-// Import routes
+const cors = require("cors");  // Import CORS middleware
 const authRoutes = require("./routes/authRoutes");
 const productRoutes = require("./routes/productRoutes");
-const cartRoutes = require("./routes/cartRoutes"); // Import cartRoutes
+const cartRoutes = require("./routes/cartRoutes");
 const orderRoutes = require("./routes/orderRoutes");
+
+dotenv.config();
 
 const app = express();
 
-// Middleware
-app.use(cors());
+// Enable CORS for all routes
+app.use(cors());  // Enable CORS middleware
+
 app.use(express.json());
 
+// Database connection
+const connectDB = async () => {
+  try {
+    await mongoose.connect(process.env.MONGO_URI);
+    console.log("MongoDB connected");
+  } catch (err) {
+    console.error("Database connection failed:", err.message);
+    process.exit(1);
+  }
+};
+
 // Connect to MongoDB
-mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => console.log("MongoDB connected"))
-  .catch((err) => console.error("MongoDB connection error:", err));
+connectDB();
 
-// Use routes
-app.use("/api/auth", authRoutes);
-app.use("/api/products", productRoutes);
-app.use("/api/cart", cartRoutes);  // Use the cart routes
-app.use("/api/orders", orderRoutes);
+// API Routes
+app.use("/api/auth", authRoutes);  // Authentication routes
+app.use("/api/products", productRoutes);  // Product routes
+app.use("/api/cart", cartRoutes);  // Cart routes
+app.use("/api/orders", orderRoutes);  // Order routes
 
-// Start server
+// Server start
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
